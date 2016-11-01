@@ -11,12 +11,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    _scene = new QGraphicsScene();
+    _scene = new CorrectorGraphicsScene();
     ui->graphicsView->setScene(_scene);
     _img = new QGraphicsPixmapItem();
     _scene->addItem(_img);
-    _rect = new GraphicsBBoxItem();
-    _scene->addItem(_rect);
 }
 
 MainWindow::~MainWindow()
@@ -24,7 +22,6 @@ MainWindow::~MainWindow()
     delete ui;
     delete _scene;
     delete _img;
-    delete _rect;
 }
 
 void MainWindow::open_dataset_dir()
@@ -58,15 +55,18 @@ void MainWindow::setImage(int index)
     _img->show();
     QRect bbox = _imgs[_cur_img].get_relbbox();
     if (!bbox.isNull()) {
-      _rect->setRect(bbox);
-      _rect->show();
+      _scene->setRect(bbox);
+      _scene->showRect();
     } else {
-        _rect->hide();
+        _scene->hideRect();
     }
 }
 
 void MainWindow::save_image()
 {
+    _imgs[_cur_img].setSymbol_bbox(_scene->getRect().toRect());
+
+    // also set the class name
     _imgs[_cur_img].saveImg();
 }
 

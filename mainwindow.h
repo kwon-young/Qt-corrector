@@ -3,13 +3,10 @@
 
 #include <QMainWindow>
 #include <QList>
-#include <QRubberBand>
-#include <QGraphicsScene>
 #include <QGraphicsPixmapItem>
-#include <QGraphicsRectItem>
 
 #include "datasetobject.h"
-#include "graphicsbboxitem.h"
+#include "correctorgraphicsscene.h"
 
 namespace Ui {
 class MainWindow;
@@ -38,9 +35,8 @@ private:
     Ui::MainWindow *ui;
     QList<DatasetObject> _imgs;
     int _cur_img;
-    QGraphicsScene * _scene;
+    CorrectorGraphicsScene * _scene;
     QGraphicsPixmapItem * _img;
-    GraphicsBBoxItem * _rect;
 };
 
 #endif // MAINWINDOW_H

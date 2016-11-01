@@ -15,10 +15,11 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     datasetobject.cpp \
-    graphicsbboxitem.cpp
+    correctorgraphicsscene.cpp
 
 HEADERS  += mainwindow.h \
     datasetobject.h \
-    graphicsbboxitem.h
+    correctorgraphicsscene.h
 
 FORMS    += mainwindow.ui
+CONFIG += c++11
