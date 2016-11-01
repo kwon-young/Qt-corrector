@@ -13,8 +13,12 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    datasetobject.cpp \
+    graphicsbboxitem.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    datasetobject.h \
+    graphicsbboxitem.h
 
 FORMS    += mainwindow.ui
