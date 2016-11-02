@@ -37,7 +37,7 @@ public:
     void setImg(const QImage &img);
 
     void loadImg();
-    bool saveImg() const;
+    bool saveImg();
 
     QString getInfo(int index) const;
     void setInfo(const QString &info, int index);
@@ -48,6 +48,7 @@ public:
     static QRect str2bbox(const QString &bbox_str);
     static QString bbox2str(const QRect &bbox);
 
+    static QStringList classnames;
 private:
 
     QString _filename;
@@ -60,7 +61,6 @@ private:
     static int class_idx;
     static int thumb_bbox_idx;
     static int symbol_bbox_idx;
-    static QStringList classnames;
 };
 
 #endif // DATASETOBJECT_H

@@ -26,9 +26,7 @@ public slots:
     void next_image();
     void previous_image();
     void update_bbox(const QRect &bbox);
-
-private slots:
-
+    void on_classComboBox_activated(const QString &classname);
 
 private:
     void load_dir(QString dirname);

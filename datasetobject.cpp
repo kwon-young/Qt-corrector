@@ -82,7 +82,7 @@ void DatasetObject::loadImg()
     }
 }
 
-bool DatasetObject::saveImg() const
+bool DatasetObject::saveImg()
 {
     bool res = QFile::rename(_backupname, _filename);
     _backupname = _filename;

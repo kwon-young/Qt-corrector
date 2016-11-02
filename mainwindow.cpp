@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(_scene);
     _img = new QGraphicsPixmapItem();
     _scene->addItem(_img);
+    connect(_scene, SIGNAL(bboxChanged(QRect)), this, SLOT(update_bbox(QRect)));
+    ui->classComboBox->addItems(DatasetObject::classnames);
 }
 
 MainWindow::~MainWindow()
@@ -61,6 +63,7 @@ void MainWindow::setImage(int index)
     } else {
         _scene->hideRect();
     }
+    ui->classComboBox->setCurrentIndex(DatasetObject::classnames.indexOf(_imgs[index].classname()));
 }
 
 void MainWindow::save_image()
@@ -84,4 +87,9 @@ void MainWindow::previous_image()
 void MainWindow::update_bbox(const QRect &bbox)
 {
     _imgs[_cur_img].setRel_bbox(bbox);
+}
+
+void MainWindow::on_classComboBox_activated(const QString &classname)
+{
+    _imgs[_cur_img].setClassname(classname);
 }
