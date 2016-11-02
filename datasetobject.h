@@ -51,6 +51,7 @@ public:
 private:
 
     QString _filename;
+    QString _backupname;
     QImage _img;
 
     static QString _sep_info;

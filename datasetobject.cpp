@@ -4,8 +4,8 @@
 #include <QPoint>
 #include <QImage>
 #include <QImageReader>
-#include <QImageWriter>
 #include <QFileInfo>
+#include <QFile>
 
 QString DatasetObject::_sep_info = "_";
 QString DatasetObject::_sep_bbox = "x";
@@ -16,7 +16,8 @@ int DatasetObject::symbol_bbox_idx = 3;
 QStringList DatasetObject::classnames = QStringList() << "JUNK" << "DIESE" << "BECARRE" << "BEMOL";
 
 DatasetObject::DatasetObject(const QString &filename):
-    _filename(filename)
+    _filename(filename),
+    _backupname(filename)
 {
 }
 
@@ -83,8 +84,9 @@ void DatasetObject::loadImg()
 
 bool DatasetObject::saveImg() const
 {
-    QImageWriter writer(_filename);
-    return writer.write(_img);
+    bool res = QFile::rename(_backupname, _filename);
+    _backupname = _filename;
+    return res;
 }
 
 QString DatasetObject::getInfo(int index) const
