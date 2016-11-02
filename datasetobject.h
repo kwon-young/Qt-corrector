@@ -42,7 +42,8 @@ public:
     QString getInfo(int index) const;
     void setInfo(const QString &info, int index);
 
-    QRect get_relbbox() const;
+    QRect rel_bbox() const;
+    void setRel_bbox(const QRect &bbox);
 
     static QRect str2bbox(const QString &bbox_str);
     static QString bbox2str(const QRect &bbox);

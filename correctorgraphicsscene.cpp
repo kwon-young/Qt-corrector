@@ -46,11 +46,66 @@ void CorrectorGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     //qDebug() << "Custom item clicked.";
     //qDebug() << event->pos();
+    //qDebug() << std::min_element(d.begin(), d.end()) - d.begin();
+    //qDebug() << _handle;
+    if (_rect->rect().isNull()) {
+        QRectF r;
+        r.setTopLeft(event->scenePos());
+        _handle = eHandleBottomRight;
+    } else {
+        setHandlePoint(event->scenePos());
+    }
+}
+
+void CorrectorGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    //qDebug() << "mouse moved";
+    //qDebug() << event->pos();
+    // if mResizeHandle is eNone then nothing is resized
+    QRectF r = _rect->rect();
+    switch( _handle)
+    {
+    case eHandleTopLeft:
+        // code to resize the object
+        r.setTopLeft(event->scenePos());
+        break;
+    case eHandleTopRight:
+        // code to resize the object
+        r.setTopRight(event->scenePos());
+        break;
+    case eHandleBottomLeft:
+        // code to resize the object
+        r.setBottomLeft(event->scenePos());
+        break;
+    case eHandleBottomRight:
+        // code to resize the object
+        r.setBottomRight(event->scenePos());
+        break;
+    default:
+        break;
+    }
+    _rect->setRect(r);
+}
+
+void CorrectorGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    _handle = eNone;
+    emit bboxChanged(_rect->rect().toRect());
+}
+
+qreal CorrectorGraphicsScene::distance(const QPointF &p1, const QPointF &p2) {
+    QPointF p = p2-p1;
+    qreal res = p.x()*p.x() + p.y()*p.y();
+    return sqrt(res);
+}
+
+void CorrectorGraphicsScene::setHandlePoint(const QPointF &p)
+{
     std::vector<qreal> d;
-    d.push_back(distance(event->pos(), _rect->rect().topLeft()));
-    d.push_back(distance(event->pos(), _rect->rect().topRight()));
-    d.push_back(distance(event->pos(), _rect->rect().bottomLeft()));
-    d.push_back(distance(event->pos(), _rect->rect().bottomRight()));
+    d.push_back(distance(p, _rect->rect().topLeft()));
+    d.push_back(distance(p, _rect->rect().topRight()));
+    d.push_back(distance(p, _rect->rect().bottomLeft()));
+    d.push_back(distance(p, _rect->rect().bottomRight()));
     //handle = d.begin() - std::min_element(d.begin(), d.end());
     switch (std::min_element(d.begin(), d.end()) - d.begin()) {
     case 0:
@@ -69,47 +124,4 @@ void CorrectorGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         _handle = eNone;
         break;
     }
-    //qDebug() << std::min_element(d.begin(), d.end()) - d.begin();
-    //qDebug() << _handle;
-}
-
-void CorrectorGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
-    //qDebug() << "mouse moved";
-    //qDebug() << event->pos();
-    // if mResizeHandle is eNone then nothing is resized
-    QRectF r = _rect->rect();
-    switch( _handle)
-    {
-    case eHandleTopLeft:
-        // code to resize the object
-        r.setTopLeft(event->pos());
-        break;
-    case eHandleTopRight:
-        // code to resize the object
-        r.setTopRight(event->pos());
-        break;
-    case eHandleBottomLeft:
-        // code to resize the object
-        r.setBottomLeft(event->pos());
-        break;
-    case eHandleBottomRight:
-        // code to resize the object
-        r.setBottomRight(event->pos());
-        break;
-    default:
-        break;
-    }
-    _rect->setRect(r);
-}
-
-void CorrectorGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    _handle = eNone;
-}
-
-qreal CorrectorGraphicsScene::distance(const QPointF &p1, const QPointF &p2) {
-    QPointF p = p2-p1;
-    qreal res = p.x()*p.x() + p.y()*p.y();
-    return sqrt(res);
 }

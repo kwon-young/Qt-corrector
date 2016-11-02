@@ -25,6 +25,7 @@ public slots:
     void save_image();
     void next_image();
     void previous_image();
+    void update_bbox(const QRect &bbox);
 
 private slots:
 

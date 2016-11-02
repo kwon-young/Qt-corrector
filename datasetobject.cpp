@@ -106,7 +106,7 @@ void DatasetObject::setInfo(const QString &info, int index)
     _filename = head + QDir::separator() + basename + ext;
 }
 
-QRect DatasetObject::get_relbbox() const
+QRect DatasetObject::rel_bbox() const
 {
     QRect rect;
     if (classname() != classnames[0]) {
@@ -115,6 +115,13 @@ QRect DatasetObject::get_relbbox() const
       rect.setSize(symbol_bbox().size());
     }
     return rect;
+}
+
+void DatasetObject::setRel_bbox(const QRect &bbox)
+{
+    QRect mybbox = bbox;
+    mybbox.translate(thumb_bbox().topLeft());
+    setSymbol_bbox(mybbox);
 }
 
 QRect DatasetObject::str2bbox(const QString &bbox_str)

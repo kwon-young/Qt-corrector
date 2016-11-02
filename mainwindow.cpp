@@ -54,7 +54,7 @@ void MainWindow::setImage(int index)
     _img->setPixmap(QPixmap::fromImage(_imgs[index].getImg()));
     _img->setZValue(1);
     _img->show();
-    QRect bbox = _imgs[_cur_img].get_relbbox();
+    QRect bbox = _imgs[_cur_img].rel_bbox();
     if (!bbox.isNull()) {
       _scene->setRect(bbox);
       _scene->showRect();
@@ -65,8 +65,6 @@ void MainWindow::setImage(int index)
 
 void MainWindow::save_image()
 {
-    _imgs[_cur_img].setSymbol_bbox(_scene->getRect().toRect());
-
     // also set the class name
     _imgs[_cur_img].saveImg();
 }
@@ -80,5 +78,10 @@ void MainWindow::next_image()
 void MainWindow::previous_image()
 {
     if (_cur_img > 0)
-      setImage(--_cur_img);
+        setImage(--_cur_img);
+}
+
+void MainWindow::update_bbox(const QRect &bbox)
+{
+    _imgs[_cur_img].setRel_bbox(bbox);
 }
