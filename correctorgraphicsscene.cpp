@@ -55,6 +55,7 @@ void CorrectorGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     } else {
         setHandlePoint(event->scenePos());
     }
+    updateHandlePoint(event->scenePos());
 }
 
 void CorrectorGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -62,29 +63,7 @@ void CorrectorGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     //qDebug() << "mouse moved";
     //qDebug() << event->pos();
     // if mResizeHandle is eNone then nothing is resized
-    QRectF r = _rect->rect();
-    switch( _handle)
-    {
-    case eHandleTopLeft:
-        // code to resize the object
-        r.setTopLeft(event->scenePos());
-        break;
-    case eHandleTopRight:
-        // code to resize the object
-        r.setTopRight(event->scenePos());
-        break;
-    case eHandleBottomLeft:
-        // code to resize the object
-        r.setBottomLeft(event->scenePos());
-        break;
-    case eHandleBottomRight:
-        // code to resize the object
-        r.setBottomRight(event->scenePos());
-        break;
-    default:
-        break;
-    }
-    _rect->setRect(r);
+    updateHandlePoint(event->scenePos());
 }
 
 void CorrectorGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
@@ -124,4 +103,31 @@ void CorrectorGraphicsScene::setHandlePoint(const QPointF &p)
         _handle = eNone;
         break;
     }
+}
+
+void CorrectorGraphicsScene::updateHandlePoint(const QPointF &p)
+{
+    QRectF r = _rect->rect();
+    switch( _handle)
+    {
+    case eHandleTopLeft:
+        // code to resize the object
+        r.setTopLeft(p);
+        break;
+    case eHandleTopRight:
+        // code to resize the object
+        r.setTopRight(p);
+        break;
+    case eHandleBottomLeft:
+        // code to resize the object
+        r.setBottomLeft(p);
+        break;
+    case eHandleBottomRight:
+        // code to resize the object
+        r.setBottomRight(p);
+        break;
+    default:
+        break;
+    }
+    _rect->setRect(r);
 }

@@ -36,6 +36,7 @@ signals:
 private:
     qreal distance(const QPointF &p1, const QPointF &p2);
     void setHandlePoint(const QPointF &p);
+    void updateHandlePoint(const QPointF &p);
 
     EResizeHandle _handle;
     QGraphicsRectItem * _rect;
