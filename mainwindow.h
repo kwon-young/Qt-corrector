@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QList>
 #include <QGraphicsPixmapItem>
+#include <QStringListModel>
+#include <QItemSelectionModel>
 
 #include "datasetobject.h"
 #include "correctorgraphicsscene.h"
@@ -27,15 +29,18 @@ public slots:
     void previous_image();
     void update_bbox(const QRect &bbox);
     void on_classComboBox_activated(const QString &classname);
+    void setImage(int index);
+    void img_selection_changed(const QItemSelection &newSelection,const QItemSelection &oldSelection);
 
 private:
     void load_dir(QString dirname);
-    void setImage(int index);
     Ui::MainWindow *ui;
     QList<DatasetObject> _imgs;
     int _cur_img;
     CorrectorGraphicsScene * _scene;
     QGraphicsPixmapItem * _img;
+    QStringListModel * _imgs_listmodel;
+
 };
 
 #endif // MAINWINDOW_H

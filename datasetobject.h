@@ -15,6 +15,8 @@ public:
     QString filename() const;
     void setFilename(const QString &filename);
 
+    QString basename() const;
+
     QString pagename() const;
     void setPagename(const QString &pagename);
 

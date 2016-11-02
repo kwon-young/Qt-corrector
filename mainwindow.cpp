@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QDebug>
+#include <QModelIndex>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,6 +18,14 @@ MainWindow::MainWindow(QWidget *parent) :
     _scene->addItem(_img);
     connect(_scene, SIGNAL(bboxChanged(QRect)), this, SLOT(update_bbox(QRect)));
     ui->classComboBox->addItems(DatasetObject::classnames);
+    ui->indexSpinBox->setMinimum(0);
+    ui->indexSpinBox->setMaximum(_imgs.size());
+    ui->indexSpinBox->setSingleStep(1);
+    _imgs_listmodel = new QStringListModel();
+    ui->imgListView->setModel(_imgs_listmodel);
+    QItemSelectionModel * selectmodel = ui->imgListView->selectionModel();
+    connect(selectmodel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            this, SLOT(img_selection_changed(QItemSelection,QItemSelection)));
 }
 
 MainWindow::~MainWindow()
@@ -46,6 +55,11 @@ void MainWindow::load_dir(QString dirname)
         _imgs.append(DatasetObject(filename));
   }
   qDebug() << "opened " << _imgs.size() << " images.";
+  ui->indexSpinBox->setMaximum(_imgs.size());
+  QStringList img_names;
+  for (auto img : _imgs)
+      img_names.append(img.basename());
+  _imgs_listmodel->setStringList(img_names);
   setImage(0);
 }
 
@@ -64,6 +78,14 @@ void MainWindow::setImage(int index)
         _scene->hideRect();
     }
     ui->classComboBox->setCurrentIndex(DatasetObject::classnames.indexOf(_imgs[index].classname()));
+    ui->indexSpinBox->setValue(index);
+    ui->imgListView->setCurrentIndex(_imgs_listmodel->index(index, 0));
+}
+
+void MainWindow::img_selection_changed(const QItemSelection &newSelection, const QItemSelection &oldSelection)
+{
+    const QModelIndex index = ui->imgListView->selectionModel()->currentIndex();
+    setImage(index.row());
 }
 
 void MainWindow::save_image()

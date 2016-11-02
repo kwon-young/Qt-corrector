@@ -163,6 +163,12 @@ void DatasetObject::setFilename(const QString &filename)
     _filename = filename;
 }
 
+QString DatasetObject::basename() const
+{
+    QFileInfo fi(_filename);
+    return fi.baseName();
+}
+
 QString DatasetObject::classname() const
 {
     return getInfo(class_idx);

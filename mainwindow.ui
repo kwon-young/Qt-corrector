@@ -15,15 +15,21 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0">
+    <item row="0" column="1">
+     <widget class="QComboBox" name="classComboBox"/>
+    </item>
+    <item row="1" column="1">
      <widget class="QGraphicsView" name="graphicsView">
       <property name="mouseTracking">
        <bool>true</bool>
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QComboBox" name="classComboBox"/>
+    <item row="2" column="1">
+     <widget class="QSpinBox" name="indexSpinBox"/>
+    </item>
+    <item row="0" column="0" rowspan="3">
+     <widget class="QListView" name="imgListView"/>
     </item>
    </layout>
   </widget>
@@ -74,6 +80,12 @@
   <action name="actionNext_Image">
    <property name="text">
     <string>&amp;Next Image</string>
+   </property>
+   <property name="shortcut">
+    <string>N</string>
+   </property>
+   <property name="autoRepeat">
+    <bool>true</bool>
    </property>
   </action>
   <action name="actionPrevious_Image">
@@ -170,6 +182,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>indexSpinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setImage(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>246</x>
+     <y>305</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>246</x>
+     <y>173</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>open_dataset_dir()</slot>
@@ -177,5 +205,6 @@
   <slot>next_image()</slot>
   <slot>previous_image()</slot>
   <slot>on_classComboBox_activated(QString)</slot>
+  <slot>setImage(int)</slot>
  </slots>
 </ui>
