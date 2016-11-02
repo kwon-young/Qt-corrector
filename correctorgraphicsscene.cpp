@@ -4,11 +4,16 @@
 #include <vector>
 #include <algorithm>
 #include <QDebug>
+#include <QPen>
+#include <QColor>
+#include <QBrush>
 
 CorrectorGraphicsScene::CorrectorGraphicsScene()
 {
     _handle = eNone;
     _rect = new QGraphicsRectItem();
+    _rect->setPen(QPen(QColor(255, 0, 0)));
+    _rect->setZValue(2);
     addItem(_rect);
 }
 
@@ -39,8 +44,8 @@ void CorrectorGraphicsScene::hideRect()
 
 void CorrectorGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << "Custom item clicked.";
-    qDebug() << event->pos();
+    //qDebug() << "Custom item clicked.";
+    //qDebug() << event->pos();
     std::vector<qreal> d;
     d.push_back(distance(event->pos(), _rect->rect().topLeft()));
     d.push_back(distance(event->pos(), _rect->rect().topRight()));
@@ -64,14 +69,14 @@ void CorrectorGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         _handle = eNone;
         break;
     }
-    qDebug() << std::min_element(d.begin(), d.end()) - d.begin();
-    qDebug() << _handle;
+    //qDebug() << std::min_element(d.begin(), d.end()) - d.begin();
+    //qDebug() << _handle;
 }
 
 void CorrectorGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << "mouse moved";
-    qDebug() << event->pos();
+    //qDebug() << "mouse moved";
+    //qDebug() << event->pos();
     // if mResizeHandle is eNone then nothing is resized
     QRectF r = _rect->rect();
     switch( _handle)

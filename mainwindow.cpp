@@ -52,6 +52,7 @@ void MainWindow::setImage(int index)
     _cur_img = index;
     _imgs[index].loadImg();
     _img->setPixmap(QPixmap::fromImage(_imgs[index].getImg()));
+    _img->setZValue(1);
     _img->show();
     QRect bbox = _imgs[_cur_img].get_relbbox();
     if (!bbox.isNull()) {
