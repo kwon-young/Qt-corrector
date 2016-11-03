@@ -34,6 +34,8 @@ public slots:
 
 private:
     void load_dir(QString dirname);
+    void set_windowTitle();
+
     Ui::MainWindow *ui;
     QList<DatasetObject> _imgs;
     int _cur_img;

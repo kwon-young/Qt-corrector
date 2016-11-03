@@ -32,7 +32,8 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete _scene;
-    delete _img;
+    //delete _img;
+    delete _imgs_listmodel;
 }
 
 void MainWindow::open_dataset_dir()
@@ -63,6 +64,14 @@ void MainWindow::load_dir(QString dirname)
   setImage(0);
 }
 
+void MainWindow::set_windowTitle()
+{
+    QString title = _imgs[_cur_img].basename();
+    if (_imgs[_cur_img].isModified())
+        title += " *";
+    setWindowTitle(title);
+}
+
 void MainWindow::setImage(int index)
 {
     _cur_img = index;
@@ -71,8 +80,8 @@ void MainWindow::setImage(int index)
     _img->setZValue(1);
     _img->show();
     QRect bbox = _imgs[_cur_img].rel_bbox();
+    _scene->setRect(bbox);
     if (!bbox.isNull()) {
-      _scene->setRect(bbox);
       _scene->showRect();
     } else {
         _scene->hideRect();
@@ -80,6 +89,7 @@ void MainWindow::setImage(int index)
     ui->classComboBox->setCurrentIndex(DatasetObject::classnames.indexOf(_imgs[index].classname()));
     ui->indexSpinBox->setValue(index);
     ui->imgListView->setCurrentIndex(_imgs_listmodel->index(index, 0));
+    set_windowTitle();
 }
 
 void MainWindow::img_selection_changed(const QItemSelection &newSelection, const QItemSelection &oldSelection)
@@ -92,6 +102,10 @@ void MainWindow::save_image()
 {
     // also set the class name
     _imgs[_cur_img].saveImg();
+    QStringList sl = _imgs_listmodel->stringList();
+    sl[_cur_img] = _imgs[_cur_img].basename();
+    _imgs_listmodel->setStringList(sl);
+    ui->imgListView->setCurrentIndex(_imgs_listmodel->index(_cur_img, 0));
 }
 
 void MainWindow::next_image()
@@ -109,9 +123,11 @@ void MainWindow::previous_image()
 void MainWindow::update_bbox(const QRect &bbox)
 {
     _imgs[_cur_img].setRel_bbox(bbox);
+    set_windowTitle();
 }
 
 void MainWindow::on_classComboBox_activated(const QString &classname)
 {
     _imgs[_cur_img].setClassname(classname);
+    set_windowTitle();
 }

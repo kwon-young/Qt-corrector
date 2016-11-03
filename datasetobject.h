@@ -47,6 +47,8 @@ public:
     QRect rel_bbox() const;
     void setRel_bbox(const QRect &bbox);
 
+    bool isModified() const;
+
     static QRect str2bbox(const QString &bbox_str);
     static QString bbox2str(const QRect &bbox);
 

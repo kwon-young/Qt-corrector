@@ -48,14 +48,18 @@ void CorrectorGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     //qDebug() << event->pos();
     //qDebug() << std::min_element(d.begin(), d.end()) - d.begin();
     //qDebug() << _handle;
-    if (_rect->rect().isNull()) {
-        QRectF r;
-        r.setTopLeft(event->scenePos());
-        _handle = eHandleBottomRight;
-    } else {
-        setHandlePoint(event->scenePos());
+    if (event->button() == Qt::LeftButton) {
+        if (_rect->rect().isNull()) {
+            QRectF r;
+            r.setTopLeft(event->scenePos());
+            _rect->setRect(r);
+            _rect->show();
+            _handle = eHandleBottomRight;
+        } else {
+            setHandlePoint(event->scenePos());
+        }
+        updateHandlePoint(event->scenePos());
     }
-    updateHandlePoint(event->scenePos());
 }
 
 void CorrectorGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -68,6 +72,9 @@ void CorrectorGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void CorrectorGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    if(event->button() == Qt::RightButton) {
+        _rect->setRect(QRect());
+    }
     _handle = eNone;
     emit bboxChanged(_rect->rect().toRect());
 }

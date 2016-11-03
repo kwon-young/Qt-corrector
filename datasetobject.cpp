@@ -2,6 +2,7 @@
 
 #include <QStringList>
 #include <QPoint>
+#include <QSize>
 #include <QImage>
 #include <QImageReader>
 #include <QFileInfo>
@@ -105,13 +106,14 @@ void DatasetObject::setInfo(const QString &info, int index)
     QStringList infos = basename.split(_sep_info);
     infos[index] = info;
     basename = infos.join(_sep_info);
-    _filename = head + QDir::separator() + basename + ext;
+    _filename = head + QDir::separator() + basename + "." + ext;
 }
 
 QRect DatasetObject::rel_bbox() const
 {
     QRect rect;
-    if (classname() != classnames[0]) {
+    //if (classname() != classnames[0]) {
+    if (!symbol_bbox().isEmpty()) {
       QPoint topleft = symbol_bbox().topLeft() - thumb_bbox().topLeft();
       rect.setTopLeft(topleft);
       rect.setSize(symbol_bbox().size());
@@ -122,8 +124,14 @@ QRect DatasetObject::rel_bbox() const
 void DatasetObject::setRel_bbox(const QRect &bbox)
 {
     QRect mybbox = bbox;
-    mybbox.translate(thumb_bbox().topLeft());
+    if (!bbox.isEmpty())
+        mybbox.translate(thumb_bbox().topLeft());
     setSymbol_bbox(mybbox);
+}
+
+bool DatasetObject::isModified() const
+{
+    return _filename.compare(_backupname) != 0;
 }
 
 QRect DatasetObject::str2bbox(const QString &bbox_str)
@@ -131,7 +139,11 @@ QRect DatasetObject::str2bbox(const QString &bbox_str)
     QStringList coords = bbox_str.split(_sep_bbox);
     QPoint topleft(coords[0].toInt(), coords[1].toInt());
     QPoint bottomright(coords[2].toInt(), coords[3].toInt());
-    return QRect(topleft, bottomright);
+    QPoint diff = bottomright - topleft;
+    QSize size(diff.x(), diff.y());
+    QRect r(topleft, bottomright);
+    r.setSize(size);
+    return r;
 }
 
 QString DatasetObject::bbox2str(const QRect &bbox)
