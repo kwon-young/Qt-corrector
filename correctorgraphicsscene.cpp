@@ -7,6 +7,7 @@
 #include <QPen>
 #include <QColor>
 #include <QBrush>
+#include <QFont>
 
 CorrectorGraphicsScene::CorrectorGraphicsScene()
 {
@@ -15,6 +16,14 @@ CorrectorGraphicsScene::CorrectorGraphicsScene()
     _rect->setPen(QPen(QColor(255, 0, 0)));
     _rect->setZValue(2);
     addItem(_rect);
+    _classname = new QGraphicsTextItem();
+    _classname->setZValue(3);
+    _classname->setPos(QPointF(0, 0));
+    _classname->setDefaultTextColor(QColor(255, 0, 0));
+    QFont font;
+    font.setBold(true);
+    _classname->setFont(font);
+    addItem(_classname);
 }
 
 CorrectorGraphicsScene::~CorrectorGraphicsScene()
@@ -40,6 +49,11 @@ void CorrectorGraphicsScene::showRect()
 void CorrectorGraphicsScene::hideRect()
 {
     _rect->hide();
+}
+
+void CorrectorGraphicsScene::setClassname(const QString &classname)
+{
+    _classname->setPlainText(classname);
 }
 
 void CorrectorGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -72,11 +86,13 @@ void CorrectorGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void CorrectorGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    _handle = eNone;
     if(event->button() == Qt::RightButton) {
         _rect->setRect(QRect());
+        emit bboxChanged(_rect->rect().toRect());
+    } else if (event->button() == Qt::MiddleButton) {
+        emit resetedInfo();
     }
-    _handle = eNone;
-    emit bboxChanged(_rect->rect().toRect());
 }
 
 qreal CorrectorGraphicsScene::distance(const QPointF &p1, const QPointF &p2) {
@@ -92,6 +108,12 @@ void CorrectorGraphicsScene::setHandlePoint(const QPointF &p)
     d.push_back(distance(p, _rect->rect().topRight()));
     d.push_back(distance(p, _rect->rect().bottomLeft()));
     d.push_back(distance(p, _rect->rect().bottomRight()));
+    qreal middlex = (_rect->rect().left()+_rect->rect().right())/2;
+    qreal middley = (_rect->rect().top()+_rect->rect().bottom())/2;
+    d.push_back(distance(p, QPoint(middlex, _rect->rect().top())));
+    d.push_back(distance(p, QPoint(_rect->rect().top(), middley)));
+    d.push_back(distance(p, QPoint(middlex, _rect->rect().bottom())));
+    d.push_back(distance(p, QPoint(_rect->rect().right(), middley)));
     //handle = d.begin() - std::min_element(d.begin(), d.end());
     switch (std::min_element(d.begin(), d.end()) - d.begin()) {
     case 0:
@@ -106,6 +128,18 @@ void CorrectorGraphicsScene::setHandlePoint(const QPointF &p)
     case 3:
         _handle = eHandleBottomRight;
         break;
+    case 4:
+        _handle = eHandleTop;
+        break;
+    case 5:
+        _handle = eHandleLeft;
+        break;
+    case 6:
+        _handle = eHandleBottom;
+        break;
+    case 7:
+        _handle = eHandleRight;
+        break;
     default:
         _handle = eNone;
         break;
@@ -118,20 +152,28 @@ void CorrectorGraphicsScene::updateHandlePoint(const QPointF &p)
     switch( _handle)
     {
     case eHandleTopLeft:
-        // code to resize the object
         r.setTopLeft(p);
         break;
     case eHandleTopRight:
-        // code to resize the object
         r.setTopRight(p);
         break;
     case eHandleBottomLeft:
-        // code to resize the object
         r.setBottomLeft(p);
         break;
     case eHandleBottomRight:
-        // code to resize the object
         r.setBottomRight(p);
+        break;
+    case eHandleTop:
+        r.setTop(p.y());
+        break;
+    case eHandleLeft:
+        r.setLeft(p.x());
+        break;
+    case eHandleBottom:
+        r.setBottom(p.y());
+        break;
+    case eHandleRight:
+        r.setRight(p.x());
         break;
     default:
         break;

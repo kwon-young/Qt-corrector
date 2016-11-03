@@ -4,6 +4,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
+#include <QGraphicsTextItem>
 
 typedef enum EResizeHandle
 {
@@ -12,6 +13,10 @@ typedef enum EResizeHandle
   eHandleTopRight,
   eHandleBottomRight,
   eHandleBottomLeft,
+  eHandleTop,
+  eHandleLeft,
+  eHandleBottom,
+  eHandleRight,
 } EResizeHandle;
 
 class CorrectorGraphicsScene : public QGraphicsScene
@@ -26,6 +31,7 @@ public:
     QRectF getRect();
     void showRect();
     void hideRect();
+    void setClassname(const QString &classname);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -33,6 +39,8 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 signals:
     void bboxChanged(const QRect &bbox);
+    void resetedInfo();
+
 private:
     qreal distance(const QPointF &p1, const QPointF &p2);
     void setHandlePoint(const QPointF &p);
@@ -40,6 +48,7 @@ private:
 
     EResizeHandle _handle;
     QGraphicsRectItem * _rect;
+    QGraphicsTextItem * _classname;
 };
 
 #endif // CORRECTORGRAPHICSSCENE_H

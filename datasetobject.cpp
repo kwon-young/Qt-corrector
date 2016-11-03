@@ -175,6 +175,11 @@ void DatasetObject::setFilename(const QString &filename)
     _filename = filename;
 }
 
+QString DatasetObject::backupname() const
+{
+    return _backupname;
+}
+
 QString DatasetObject::basename() const
 {
     QFileInfo fi(_filename);

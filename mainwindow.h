@@ -30,6 +30,7 @@ public slots:
     void update_bbox(const QRect &bbox);
     void on_classComboBox_activated(const QString &classname);
     void setImage(int index);
+    void resetImage();
     void img_selection_changed(const QItemSelection &newSelection,const QItemSelection &oldSelection);
 
 private:

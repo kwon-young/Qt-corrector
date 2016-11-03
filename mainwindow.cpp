@@ -6,6 +6,7 @@
 #include <QDirIterator>
 #include <QDebug>
 #include <QModelIndex>
+#include <QScrollBar>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -17,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _img = new QGraphicsPixmapItem();
     _scene->addItem(_img);
     connect(_scene, SIGNAL(bboxChanged(QRect)), this, SLOT(update_bbox(QRect)));
+    connect(_scene, SIGNAL(resetedInfo()), this, SLOT(resetImage()));
     ui->classComboBox->addItems(DatasetObject::classnames);
     ui->indexSpinBox->setMinimum(0);
     ui->indexSpinBox->setMaximum(_imgs.size());
@@ -61,6 +63,8 @@ void MainWindow::load_dir(QString dirname)
   for (auto img : _imgs)
       img_names.append(img.basename());
   _imgs_listmodel->setStringList(img_names);
+  ui->imgListView->setMaximumWidth(ui->imgListView->sizeHintForColumn(0)
+                                   + ui->imgListView->verticalScrollBar()->width());
   setImage(0);
 }
 
@@ -89,7 +93,14 @@ void MainWindow::setImage(int index)
     ui->classComboBox->setCurrentIndex(DatasetObject::classnames.indexOf(_imgs[index].classname()));
     ui->indexSpinBox->setValue(index);
     ui->imgListView->setCurrentIndex(_imgs_listmodel->index(index, 0));
+    _scene->setClassname(_imgs[_cur_img].classname());
     set_windowTitle();
+}
+
+void MainWindow::resetImage()
+{
+    _imgs[_cur_img].setFilename(_imgs[_cur_img].backupname());
+    setImage(_cur_img);
 }
 
 void MainWindow::img_selection_changed(const QItemSelection &newSelection, const QItemSelection &oldSelection)
@@ -129,5 +140,6 @@ void MainWindow::update_bbox(const QRect &bbox)
 void MainWindow::on_classComboBox_activated(const QString &classname)
 {
     _imgs[_cur_img].setClassname(classname);
+    _scene->setClassname(_imgs[_cur_img].classname());
     set_windowTitle();
 }
