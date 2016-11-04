@@ -14,7 +14,8 @@ int DatasetObject::page_idx = 0;
 int DatasetObject::class_idx = 1;
 int DatasetObject::thumb_bbox_idx = 2;
 int DatasetObject::symbol_bbox_idx = 3;
-QStringList DatasetObject::classnames = QStringList() << "JUNK" << "DIESE" << "BECARRE" << "BEMOL";
+QStringList DatasetObject::classnames = QStringList()
+        << "JUNK" << "DIESE" << "BECARRE" << "BEMOL" << "DDIESE";
 
 DatasetObject::DatasetObject(const QString &filename):
     _filename(filename),
