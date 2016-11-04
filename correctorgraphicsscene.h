@@ -5,6 +5,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
 #include <QGraphicsTextItem>
+#include <QWheelEvent>
+#include <QGraphicsSceneWheelEvent>
 
 typedef enum EResizeHandle
 {
@@ -33,13 +35,18 @@ public:
     void hideRect();
     void setClassname(const QString &classname);
 
+public slots:
+    void scalingTime(qreal x);
+    void animFinished();
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    void wheelEvent(QGraphicsSceneWheelEvent *event);
 signals:
     void bboxChanged(const QRect &bbox);
     void resetedInfo();
+    void zoomChanged(const qreal x);
 
 private:
     qreal distance(const QPointF &p1, const QPointF &p2);
@@ -49,6 +56,7 @@ private:
     EResizeHandle _handle;
     QGraphicsRectItem * _rect;
     QGraphicsTextItem * _classname;
+    int _numScheduledScalings;
 };
 
 #endif // CORRECTORGRAPHICSSCENE_H

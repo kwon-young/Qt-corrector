@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QItemSelectionModel * selectmodel = ui->imgListView->selectionModel();
     connect(selectmodel, SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
             this, SLOT(img_selection_changed(QItemSelection,QItemSelection)));
+    connect(_scene, SIGNAL(zoomChanged(qreal)), this, SLOT(zoomChange(qreal)));
 }
 
 MainWindow::~MainWindow()
@@ -107,6 +108,11 @@ void MainWindow::img_selection_changed(const QItemSelection &newSelection, const
 {
     const QModelIndex index = ui->imgListView->selectionModel()->currentIndex();
     setImage(index.row());
+}
+
+void MainWindow::zoomChange(qreal factor)
+{
+    ui->graphicsView->scale(factor, factor);
 }
 
 void MainWindow::save_image()

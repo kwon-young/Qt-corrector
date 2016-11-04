@@ -32,6 +32,7 @@ public slots:
     void setImage(int index);
     void resetImage();
     void img_selection_changed(const QItemSelection &newSelection,const QItemSelection &oldSelection);
+    void zoomChange(qreal factor);
 
 private:
     void load_dir(QString dirname);

@@ -8,6 +8,7 @@
 #include <QColor>
 #include <QBrush>
 #include <QFont>
+#include <QTimeLine>
 
 CorrectorGraphicsScene::CorrectorGraphicsScene()
 {
@@ -24,6 +25,7 @@ CorrectorGraphicsScene::CorrectorGraphicsScene()
     font.setBold(true);
     _classname->setFont(font);
     addItem(_classname);
+    _numScheduledScalings = 0;
 }
 
 CorrectorGraphicsScene::~CorrectorGraphicsScene()
@@ -86,13 +88,48 @@ void CorrectorGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void CorrectorGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    _handle = eNone;
     if(event->button() == Qt::RightButton) {
         _rect->setRect(QRect());
+        emit bboxChanged(_rect->rect().toRect());
+    } else if (event->button() == Qt::LeftButton) {
+        updateHandlePoint(event->scenePos());
         emit bboxChanged(_rect->rect().toRect());
     } else if (event->button() == Qt::MiddleButton) {
         emit resetedInfo();
     }
+    _handle = eNone;
+}
+
+void CorrectorGraphicsScene::wheelEvent (QGraphicsSceneWheelEvent *event )
+{
+    int numDegrees = event->delta() / 8;
+    int numSteps = numDegrees / 15; // see QWheelEvent documentation
+    _numScheduledScalings += numSteps;
+    if (_numScheduledScalings * numSteps < 0) // if user moved the wheel in another direction, we reset previously scheduled scalings
+        _numScheduledScalings = numSteps;
+
+    QTimeLine *anim = new QTimeLine(350, this);
+    anim->setUpdateInterval(20);
+
+    connect(anim, SIGNAL (valueChanged(qreal)), SLOT (scalingTime(qreal)));
+    connect(anim, SIGNAL (finished()), SLOT (animFinished()));
+    anim->start();
+}
+
+void CorrectorGraphicsScene::scalingTime(qreal x)
+{
+    qreal factor = 1.0+ qreal(_numScheduledScalings) / 300.0;
+    //scale(factor, factor);
+    emit zoomChanged(factor);
+}
+
+void CorrectorGraphicsScene::animFinished()
+{
+    if (_numScheduledScalings > 0)
+        _numScheduledScalings--;
+    else
+        _numScheduledScalings++;
+    sender()->~QObject();
 }
 
 qreal CorrectorGraphicsScene::distance(const QPointF &p1, const QPointF &p2) {
