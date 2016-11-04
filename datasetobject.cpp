@@ -142,8 +142,8 @@ QRect DatasetObject::str2bbox(const QString &bbox_str)
     QPoint bottomright(coords[2].toInt(), coords[3].toInt());
     QPoint diff = bottomright - topleft;
     QSize size(diff.x(), diff.y());
-    QRect r(topleft, bottomright);
-    r.setSize(size);
+    QRect r(topleft, size);
+    //r.setSize(size);
     return r;
 }
 
