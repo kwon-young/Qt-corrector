@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QModelIndex>
 #include <QScrollBar>
+#include <QtAlgorithms>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -53,10 +54,15 @@ void MainWindow::load_dir(QString dirname)
   _imgs.clear();
   QDirIterator it(dirname, QStringList() << "*.jpg", QDir::Files);
   QDir rootdir(dirname);
+  QStringList names;
   while (it.hasNext()) {
-    QString filename = rootdir.absoluteFilePath(it.next());
-    if (rootdir.exists(filename))
-        _imgs.append(DatasetObject(filename));
+      QString filename = rootdir.absoluteFilePath(it.next());
+      names.append(filename);
+  }
+  qSort(names.begin(), names.end());
+  for (auto filename : names) {
+      if (rootdir.exists(filename))
+          _imgs.append(DatasetObject(filename));
   }
   qDebug() << "opened " << _imgs.size() << " images.";
   ui->indexSpinBox->setMaximum(_imgs.size());
